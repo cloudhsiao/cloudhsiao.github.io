@@ -1,0 +1,746 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="CloudHs Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="最近在玩 WRTnode (http://wrtnode.cc)，為此也做了幾個小應用程式跟這塊可愛的小板子進行互動，不過之間涉及到網路的聯通動作都還只能在內網下操作，雖說在外網的操作可以藉由像是 MQTT 來達成，不過資料總還是得透過一個中繼伺服器來進行傳輸，總覺得不怎麼可靠呢！
+不過在市面上找到一個 P2P 的連線解決方案 Kalay，就讓我們來試試骨子裡賣什麼藥吧！
+Requirements">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Getting Started with Kalay Starter Kit">
+<meta property="og:url" content="http://yoursite.com/2015/09/04/Getting Started with Kalay Starter Kit/index.html">
+<meta property="og:site_name" content="CloudHs Blog">
+<meta property="og:description" content="最近在玩 WRTnode (http://wrtnode.cc)，為此也做了幾個小應用程式跟這塊可愛的小板子進行互動，不過之間涉及到網路的聯通動作都還只能在內網下操作，雖說在外網的操作可以藉由像是 MQTT 來達成，不過資料總還是得透過一個中繼伺服器來進行傳輸，總覺得不怎麼可靠呢！
+不過在市面上找到一個 P2P 的連線解決方案 Kalay，就讓我們來試試骨子裡賣什麼藥吧！
+Requirements">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150828_001.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150831_001.png">
+<meta property="og:image" content="http://creativecommons.tw/sites/creativecommons.tw/files/cc-by-nc-sa-88x31.png">
+<meta property="og:updated_time" content="2016-02-24T01:14:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Getting Started with Kalay Starter Kit">
+<meta name="twitter:description" content="最近在玩 WRTnode (http://wrtnode.cc)，為此也做了幾個小應用程式跟這塊可愛的小板子進行互動，不過之間涉及到網路的聯通動作都還只能在內網下操作，雖說在外網的操作可以藉由像是 MQTT 來達成，不過資料總還是得透過一個中繼伺服器來進行傳輸，總覺得不怎麼可靠呢！
+不過在市面上找到一個 P2P 的連線解決方案 Kalay，就讓我們來試試骨子裡賣什麼藥吧！
+Requirements">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Getting Started with Kalay Starter Kit | CloudHs Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">CloudHs Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            歸檔
+          </a>
+        </li>
+      
+
+      
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Getting Started with Kalay Starter Kit
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">發表於</span>
+            <time itemprop="dateCreated" datetime="2015-09-04T00:00:00+08:00" content="2015-09-04">
+              2015-09-04
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/09/04/Getting Started with Kalay Starter Kit/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/09/04/Getting Started with Kalay Starter Kit/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在玩 WRTnode (<a href="http://wrtnode.cc)，為此也做了幾個小應用程式跟這塊可愛的小板子進行互動，不過之間涉及到網路的聯通動作都還只能在內網下操作，雖說在外網的操作可以藉由像是" target="_blank" rel="external">http://wrtnode.cc)，為此也做了幾個小應用程式跟這塊可愛的小板子進行互動，不過之間涉及到網路的聯通動作都還只能在內網下操作，雖說在外網的操作可以藉由像是</a> MQTT 來達成，不過資料總還是得透過一個中繼伺服器來進行傳輸，總覺得不怎麼可靠呢！</p>
+<p>不過在市面上找到一個 P2P 的連線解決方案 <a href="http://www.tutk.com" target="_blank" rel="external"><strong>Kalay</strong></a>，就讓我們來試試骨子裡賣什麼藥吧！</p>
+<h2 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h2><ul>
+<li>WRTnode</li>
+<li>Android 手機 (也可以用模擬器)</li>
+<li><em>一顆熱誠的心</em></li>
+</ul>
+<h2 id="What-will-we-learn"><a href="#What-will-we-learn" class="headerlink" title="What will we learn"></a>What will we learn</h2><p>在本次的主題中，將會建立一個 Android App，用以和 WRTnode 互動，在 App 上按下按鈕，將會開啟或關閉 WRTnode 上的 LED 燈。在這個實作上我們將會分為二個部分進行：</p>
+<ul>
+<li>WRTnode 撰寫 Restful API，讓 Web Client 可以透過 Restful API 控制板子上的 LED。</li>
+<li>撰寫 Android App，並使用 WRTnode 的 Restful API。</li>
+</ul>
+<h2 id="Let’s-start-with-WRTnode"><a href="#Let’s-start-with-WRTnode" class="headerlink" title="Let’s start with WRTnode"></a>Let’s start with WRTnode</h2><p>在拿到 WRTnode 之後發現這塊板子沒有網路孔，看來只能先透過無線網路方式連到它再進行設定了，所幸 WRTnode 官網上的<a href="http://wiki.wrtnode.com/index.php?title=Starting" target="_blank" rel="external">設定方式</a> 還算親民，從設定對外網路到可以透過 SSH 連線進 WRTnode 約半小時內可完成。</p>
+<p>WRTnode 也原生支援 python，因此可以透過 python web framework 完成我們的 API。這邊我用的 python web framework 是 <a href="http://bottlepy.org" target="_blank" rel="external">Bottle</a>，Bottle 的安裝方式相對容易，可以直接透過 wget 下載。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget --no-check-certificate https://github.com/bottlepy/bottle/raw/master/bottle.py</span><br></pre></td></tr></table></figure>
+<p>在此之前，我們先小試一下 Bottle 的功能，下面是 Bottle 官網上的小程式，我們拿來試一下效果。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> route, run, template</span><br><span class="line"></span><br><span class="line"><span class="decorator">@route('/hello/&lt;name&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> template(<span class="string">'&lt;b&gt;Hello &#123;&#123;name&#125;&#125;&lt;/b&gt;!'</span>, name=name)</span><br><span class="line"></span><br><span class="line">run(host=<span class="string">'0.0.0.0'</span>, port=<span class="number">8080</span>)</span><br></pre></td></tr></table></figure>
+<p>執行上面的 python 程式碼後，WRTnode 將會運行一個 Listen 8080 port 的 web server，這時我們可以透過瀏覽器看一下執行結果。<br><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150828_001.png" alt="hello world with Bottle"></p>
+<p>那麼，要怎麼使用 python 控制 LED 燈呢？下面是個簡單的範例，執行這個程式後，WRTnode 上的 LED 燈將會 blink blink 的閃個不停喔！</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os, time</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    os.system(<span class="string">'echo 0 &gt; /sys/class/leds/wrtnode:blue:indicator/brightness'</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    os.system(<span class="string">'echo 1 &gt; /sys/class/leds/wrtnode:blue:indicator/brightness'</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>太好了！如果把上面二個程式結合在一起，不就可以透過 web browser 控制 LED 了嗎？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> route, run</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="decorator">@route('/led/&lt;switch&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">led_switch</span><span class="params">(switch)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> switch == <span class="string">"on"</span>:</span><br><span class="line">        os.system(<span class="string">'echo 0 &gt; /sys/class/leds/wrtnode:blue:indicator/brightness'</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"LED ON"</span></span><br><span class="line">    <span class="keyword">elif</span> switch == <span class="string">"off"</span>:</span><br><span class="line">        os.system(<span class="string">'echo 1 &gt; /sys/class/leds/wrtnode:blue:indicator/brightness'</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"LED OFF"</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Not support"</span></span><br><span class="line"></span><br><span class="line">run(host=<span class="string">'0.0.0.0'</span>, port=<span class="number">8080</span>)</span><br></pre></td></tr></table></figure>
+<p>執行上面的程式後，便可以透過 web browser 操作 WRTnode 上的 LED 燈了。</p>
+<ul>
+<li>開啟 LED 燈：<code>http://%IP%:8080/led/on</code></li>
+<li>關閉 LED 燈：<code>http://%IP%:8080/led/off</code></li>
+</ul>
+<p>讓我先告一段落在 WRTnode 上的實作，接下來我們要撰寫 Android App 控制 WRTnode。</p>
+<p>當然，在開發 Android 應用程式之前，要先將開發工具打點好，這邊我選用的是 Android Studio 1.3.2 (<a href="http://developer.android.com/sdk)，Android" target="_blank" rel="external">http://developer.android.com/sdk)，Android</a> Studio 的安裝及設定在此就不介紹了，需要這方面資訊的朋友可以前往 Google 大神詢問。</p>
+<p>在安裝好 Android Studio 之後，我們先來建立個應用程式吧，然後我們在 Activity 上加入二個按鈕，分別用作開啟及關閉 LED 燈。</p>
+<p>以下是我自己應用程式的 layout。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">RelativeLayout</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">xmlns:tools</span>=<span class="value">"http://schemas.android.com/tools"</span> <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span> <span class="attribute">android:paddingLeft</span>=<span class="value">"@dimen/activity_horizontal_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingRight</span>=<span class="value">"@dimen/activity_horizontal_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingTop</span>=<span class="value">"@dimen/activity_vertical_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingBottom</span>=<span class="value">"@dimen/activity_vertical_margin"</span> <span class="attribute">tools:context</span>=<span class="value">".MainActivity"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">Button</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:text</span>=<span class="value">"LED On"</span></span><br><span class="line">        <span class="attribute">android:id</span>=<span class="value">"@+id/btnOn"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">Button</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_toRightOf</span>=<span class="value">"@id/btnOn"</span></span><br><span class="line">        <span class="attribute">android:text</span>=<span class="value">"LED Off"</span></span><br><span class="line">        <span class="attribute">android:id</span>=<span class="value">"@+id/btnOff"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="title">RelativeLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>接下來為了能讓應用程式可以連上網路，因此必須給予 Internet accessible 的 permission。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">uses-permission</span> <span class="attribute">android:name</span>=<span class="value">"android.permission.INTERNET"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在這個應用程式中，我使用了 <a href="https://developer.android.com/training/volley/index.html" target="_blank" rel="external">Volley</a> 來存取 HTTP，所以必須在 Gradle 中加入。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile 'com.mcxiaoke.volley:library:1.0.18'</span><br></pre></td></tr></table></figure>
+<p>最後我們在主程式 (MainActivity.java) 中撰寫這二個按鈕的程式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"LED_SWITCH"</span>;</span><br><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">    Button btnOn = (Button)findViewById(R.id.btnOn);</span><br><span class="line">    Button btnOff= (Button)findViewById(R.id.btnOff);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// We use Volley to send http command to the device.</span></span><br><span class="line">    <span class="keyword">final</span> RequestQueue queue = Volley.newRequestQueue(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    btnOn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">        <span class="annotation">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// Send http request to the WRTnode.</span></span><br><span class="line">            StringRequest request = <span class="keyword">new</span> StringRequest(Request.Method.GET, <span class="string">"http://192.168.2.108:8080/led/on"</span>,</span><br><span class="line">                    <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</span><br><span class="line">                        <span class="annotation">@Override</span></span><br><span class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</span><br><span class="line">                            Log.d(TAG, response);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="keyword">new</span> Response.ErrorListener() &#123;</span><br><span class="line">                            <span class="annotation">@Override</span></span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</span><br><span class="line">                                Log.d(TAG, <span class="string">"That didn't work!"</span>);</span><br><span class="line">                            &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            queue.add(request);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    btnOff.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">        <span class="annotation">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// Send http request to the WRTnode.</span></span><br><span class="line">            StringRequest request = <span class="keyword">new</span> StringRequest(Request.Method.GET, <span class="string">"http://192.168.2.108:8080/led/off"</span>,</span><br><span class="line">                    <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</span><br><span class="line">                        <span class="annotation">@Override</span></span><br><span class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</span><br><span class="line">                            Log.d(TAG, response);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="keyword">new</span> Response.ErrorListener() &#123;</span><br><span class="line">                        <span class="annotation">@Override</span></span><br><span class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</span><br><span class="line">                            Log.d(TAG, <span class="string">"That didn't work!"</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            queue.add(request);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好了，在程式順利編譯執行後，按下「On」、「Off」按鈕，可以在 logcat 中看到 WRTnode 的回覆。</p>
+<h2 id="Use-Kalay-SDK"><a href="#Use-Kalay-SDK" class="headerlink" title="Use Kalay SDK"></a>Use Kalay SDK</h2><p>截至目前為止，我們都可以在內網 (LAN) 中存取 WRTnode 的 HTTP 服務，但如果我們要在外網的環境下存取 WRTnode 的話，勢必得設定 Router 進行 port-mapping 或是 port-forwarding 了。所幸我們今天要介紹的 Kalay 提供了另一種簡決方式，透過簡易的 API 使用，便可以 P2P tunneling 的方法存取遠端的裝置。</p>
+<p>在 Kalay Starter Kit 中提供了給 WRTnode 使用的 C library，我們可以使用 WRTnode 的交叉編譯器 (Cross compiler) 產出 Kalay P2PTunnel 執行檔 (Daemon) 放在 WRTnode 上執行。</p>
+<p>在 WRTnode 的 wiki 官網上可以下載預先編譯好的 <a href="http://wiki.wrtnode.com/index.php?title=How_to_compile_with_the_openwrt_toolchain" target="_blank" rel="external">tool-chain</a>，我這邊使用 Ubuntu 14.04LTS 下載後並解壓縮。</p>
+<p>在佈置好 WRTnode 的 tool-chain 後，我們先以 Kit 中的 Sample code 試著編譯看看。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">export</span> CC=%WRTNODE_TOOL_CHAIN_FOLDER%/bin/mipsel-openwrt-linux-uclibc-gcc</span><br><span class="line">$ <span class="built_in">export</span> PLATFORM=%KALAY_KIT_FOLDER%/Lib/Linux/Mips_MT7620AOpenwrt_4.<span class="number">8.3</span></span><br><span class="line">$ <span class="built_in">cd</span> %KALAY_KIT_FOLDER%/Sample/Linux/Sample_P2PTunnel</span><br><span class="line">$ <span class="string">"<span class="variable">$CC</span>"</span> P2PTunnelServer.c -I../../../Lib/ -L<span class="string">"<span class="variable">$PLATFORM</span>"</span> <span class="operator">-l</span>P2PTunnelAPIs <span class="operator">-l</span>RDTAPIs <span class="operator">-l</span>IOTCAPIs -lpthread -ldl -o P2PTunnelServer</span><br></pre></td></tr></table></figure>
+<p>編譯成功後，我們將 P2PTunnelServer 以及 Kalay SDK 的 Library 檔案丟到 WRTnode 上執行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LD_LIBRARY_PATH=%KALAY_KIT_LIB_FOLDER% ./P2PTunnelServer %UID%</span><br></pre></td></tr></table></figure>
+<p>這時已經完成 WRTnode 的整合，接下來進行的是 Android App 上的整合。</p>
+<p>從 Kalay Starter Kit 中發現提供給 Android 使用的是 Native Library，在 Android Studio 中使用 Native Library 則必須將這些檔案丟到特定的目錄中。</p>
+<p><code>app/src/main/jniLibs/armeabi/xxx.so</code></p>
+<p><code>app/src/main/jniLibs/x86/xxx.so</code></p>
+<p>在完成 Library 及 wrapper class 的佈署後，我們在畫面上新增一個文件方塊及按鈕。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">RelativeLayout</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">xmlns:tools</span>=<span class="value">"http://schemas.android.com/tools"</span> <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span> <span class="attribute">android:paddingLeft</span>=<span class="value">"@dimen/activity_horizontal_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingRight</span>=<span class="value">"@dimen/activity_horizontal_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingTop</span>=<span class="value">"@dimen/activity_vertical_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingBottom</span>=<span class="value">"@dimen/activity_vertical_margin"</span> <span class="attribute">tools:context</span>=<span class="value">".MainActivity"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">EditText</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"fill_parent"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:hint</span>=<span class="value">"Please input UID"</span></span><br><span class="line">        <span class="attribute">android:maxLength</span>=<span class="value">"20"</span></span><br><span class="line">        <span class="attribute">android:inputType</span>=<span class="value">"textCapCharacters"</span></span><br><span class="line">        <span class="attribute">android:id</span>=<span class="value">"@+id/edtUID"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">Button</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"fill_parent"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_below</span>=<span class="value">"@id/edtUID"</span></span><br><span class="line">        <span class="attribute">android:text</span>=<span class="value">"CONNECT"</span></span><br><span class="line">        <span class="attribute">android:id</span>=<span class="value">"@+id/btnConnect"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">Button</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_below</span>=<span class="value">"@id/btnConnect"</span></span><br><span class="line">        <span class="attribute">android:text</span>=<span class="value">"LED On"</span></span><br><span class="line">        <span class="attribute">android:id</span>=<span class="value">"@+id/btnOn"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">Button</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_toRightOf</span>=<span class="value">"@id/btnOn"</span></span><br><span class="line">        <span class="attribute">android:layout_alignTop</span>=<span class="value">"@id/btnOn"</span></span><br><span class="line">        <span class="attribute">android:text</span>=<span class="value">"LED Off"</span></span><br><span class="line">        <span class="attribute">android:id</span>=<span class="value">"@+id/btnOff"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="title">RelativeLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在這個新的應用程式，我們必須先輸入 Kalay UID，然後按下 <code>CONNECT</code> 按鈕，待 App 與 WRTnode 成功後，才得使用 <code>LED ON</code> 及 <code>LED OFF</code> 這二個按鈕進行控制。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">ActionBarActivity</span> <span class="keyword">implements</span> <span class="title">P2PTunnelAPIs</span>.<span class="title">IP2PTunnelCallback</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"LED_SWITCH"</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> String USER = <span class="string">"Tutk.com"</span>;      <span class="comment">// refer to P2PTunnelServer.c</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> String PWD = <span class="string">"P2P Platform"</span>;   <span class="comment">// refer to P2PTunnelServer.c</span></span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> EditText edtUID = (EditText)findViewById(R.id.edtUID);</span><br><span class="line">        <span class="keyword">final</span> Button btnOn = (Button)findViewById(R.id.btnOn);</span><br><span class="line">        <span class="keyword">final</span> Button btnOff= (Button)findViewById(R.id.btnOff);</span><br><span class="line">        <span class="keyword">final</span> Button btnConnect = (Button)findViewById(R.id.btnConnect);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Disable these LED switch buttons</span></span><br><span class="line">        btnOn.setEnabled(<span class="keyword">false</span>);</span><br><span class="line">        btnOff.setEnabled(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Initiate the P2PTunnelAPI</span></span><br><span class="line">        <span class="keyword">final</span> P2PTunnelAPIs api = <span class="keyword">new</span> P2PTunnelAPIs(<span class="keyword">this</span>);</span><br><span class="line">        api.P2PTunnelAgentInitialize(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">        btnConnect.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (edtUID.length() == <span class="number">20</span>) &#123;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// Disable the connect button</span></span><br><span class="line">                    refreshConnectButtonStatus(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// Start a new thread to connect to device</span></span><br><span class="line">                    <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                        <span class="annotation">@Override</span></span><br><span class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                            String UID = edtUID.getText().toString();</span><br><span class="line">                            <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">                            <span class="keyword">int</span>[] errFromDevice = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">                            ret = api.P2PTunnelAgent_Connect(UID, getAuthData(USER, PWD), getAuthDataLength(), errFromDevice);</span><br><span class="line">                            <span class="keyword">if</span> (ret &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                                <span class="keyword">int</span> idx = api.P2PTunnelAgent_PortMapping(ret, <span class="number">8080</span>, <span class="number">8080</span>);</span><br><span class="line">                                <span class="keyword">if</span> (idx &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                                    Log.d(TAG, <span class="string">"Session established"</span>);</span><br><span class="line">                                    <span class="comment">// Enable LED buttons</span></span><br><span class="line">                                    refreshLEDButtonStatus(<span class="keyword">true</span>);</span><br><span class="line">                                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                                    Log.d(TAG, <span class="string">"Failed to mapping ports"</span>);</span><br><span class="line">                                    <span class="comment">// Enable the connection button</span></span><br><span class="line">                                    refreshConnectButtonStatus(<span class="keyword">true</span>);</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ret == P2PTunnelAPIs.TUNNEL_ER_AUTH_FAILED) &#123;</span><br><span class="line">                                <span class="keyword">if</span> (errFromDevice[<span class="number">0</span>] == -<span class="number">888</span>) &#123;</span><br><span class="line">                                    <span class="comment">// The error code -888 is from P2PTunnelServer.c</span></span><br><span class="line">                                    Log.d(TAG, <span class="string">"The auth data is wrong."</span>);</span><br><span class="line">                                &#125;</span><br><span class="line">                                <span class="comment">// Enable the connection button</span></span><br><span class="line">                                refreshConnectButtonStatus(<span class="keyword">true</span>);</span><br><span class="line">                            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                                <span class="comment">// Enable the connection button</span></span><br><span class="line">                                refreshConnectButtonStatus(<span class="keyword">true</span>);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;).start();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// We use Volley to send http command to the device.</span></span><br><span class="line">        <span class="keyword">final</span> RequestQueue queue = Volley.newRequestQueue(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">        btnOn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">                <span class="comment">// Send http request to the WRTnode.</span></span><br><span class="line">                StringRequest request = <span class="keyword">new</span> StringRequest(Request.Method.GET, <span class="string">"http://127.0.0.1:8080/led/on"</span>,</span><br><span class="line">                        <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</span><br><span class="line">                            <span class="annotation">@Override</span></span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</span><br><span class="line">                                Log.d(TAG, response);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;,</span><br><span class="line">                        <span class="keyword">new</span> Response.ErrorListener() &#123;</span><br><span class="line">                                <span class="annotation">@Override</span></span><br><span class="line">                                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</span><br><span class="line">                                    Log.d(TAG, <span class="string">"That didn't work!"</span>);</span><br><span class="line">                                &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                );</span><br><span class="line"></span><br><span class="line">                queue.add(request);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        btnOff.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">                <span class="comment">// Send http request to the WRTnode.</span></span><br><span class="line">                StringRequest request = <span class="keyword">new</span> StringRequest(Request.Method.GET, <span class="string">"http://127.0.0.1:8080/led/off"</span>,</span><br><span class="line">                        <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</span><br><span class="line">                            <span class="annotation">@Override</span></span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</span><br><span class="line">                                Log.d(TAG, response);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;,</span><br><span class="line">                        <span class="keyword">new</span> Response.ErrorListener() &#123;</span><br><span class="line">                            <span class="annotation">@Override</span></span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</span><br><span class="line">                                Log.d(TAG, <span class="string">"That didn't work!"</span>);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                );</span><br><span class="line"></span><br><span class="line">                queue.add(request);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">getAuthDataLength</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">128</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] getAuthData(String username, String password) &#123;</span><br><span class="line">        <span class="comment">/* The authdata structure between device and client:</span><br><span class="line">            typedef struct st_AuthData</span><br><span class="line">            &#123;</span><br><span class="line">                char szUsername[64];</span><br><span class="line">                char szPassword[64];</span><br><span class="line">            &#125; sAuthData;</span><br><span class="line">        */</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span>[] result = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">128</span>];</span><br><span class="line">        <span class="keyword">byte</span>[] acc = username.getBytes(StandardCharsets.US_ASCII);</span><br><span class="line">        <span class="keyword">byte</span>[] pwd = password.getBytes(StandardCharsets.US_ASCII);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// copy acc and pwd to result</span></span><br><span class="line">        System.arraycopy(acc, <span class="number">0</span>, result, <span class="number">0</span>, acc.length);</span><br><span class="line">        System.arraycopy(pwd, <span class="number">0</span>, result, <span class="number">64</span>, pwd.length);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">refreshConnectButtonStatus</span><span class="params">(<span class="keyword">final</span> <span class="keyword">boolean</span> status)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.runOnUiThread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">final</span> Button btnConnect = (Button)findViewById(R.id.btnConnect);</span><br><span class="line">                btnConnect.setEnabled(status);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">refreshLEDButtonStatus</span><span class="params">(<span class="keyword">final</span> <span class="keyword">boolean</span> status)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.runOnUiThread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">final</span> Button btnOn = (Button)findViewById(R.id.btnOn);</span><br><span class="line">                <span class="keyword">final</span> Button btnOff= (Button)findViewById(R.id.btnOff);</span><br><span class="line">                btnOn.setEnabled(status);</span><br><span class="line">                btnOff.setEnabled(status);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTunnelStatusChanged</span><span class="params">(<span class="keyword">int</span> nErrCode, <span class="keyword">int</span> nSID)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (nErrCode == P2PTunnelAPIs.TUNNEL_ER_DISCONNECTED) &#123;</span><br><span class="line">            refreshConnectButtonStatus(<span class="keyword">true</span>);</span><br><span class="line">            refreshLEDButtonStatus(<span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTunnelSessionInfoChanged</span><span class="params">(sP2PTunnelSessionInfo object)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>讓我們編譯進執行，然後輸入 WRTnode 的 UID，按下 <code>CONNECT</code> 按鈕，成功建立連線後，就可以操作 LED 燈號了！</p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150831_001.png" alt="App Layout"></p>
+<p>透過上述的實作，我們明白即便在外網，透過 Kalay 也能夠簡易地連線到遠端的裝置。</p>
+<p>上述 Android 程式碼可於 Github 上下載 (<a href="https://github.com/cloudhsiao/led_switch)。" target="_blank" rel="external">https://github.com/cloudhsiao/led_switch)。</a></p>
+<hr>
+<p>本文章以 <img src="http://creativecommons.tw/sites/creativecommons.tw/files/cc-by-nc-sa-88x31.png" alt="CC"> 方式授權。</p>
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/06/09/Play audio with Raspberry Pi/" rel="next" title="Play audio with Raspberry Pi">
+                <i class="fa fa-chevron-left"></i> Play audio with Raspberry Pi
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/01/Learn RxSwift/" rel="prev" title="Learn RxSwift">
+                Learn RxSwift <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Cloud Hsiao" />
+          <p class="site-author-name" itemprop="name">Cloud Hsiao</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+          
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">標籤</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Requirements"><span class="nav-number">1.</span> <span class="nav-text">Requirements</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-will-we-learn"><span class="nav-number">2.</span> <span class="nav-text">What will we learn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Let’s-start-with-WRTnode"><span class="nav-number">3.</span> <span class="nav-text">Let’s start with WRTnode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Use-Kalay-SDK"><span class="nav-number">4.</span> <span class="nav-text">Use Kalay SDK</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cloud Hsiao</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  
+
+
+  
+
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'cloudhsiao';
+      var disqus_identifier = '2015/09/04/Getting Started with Kalay Starter Kit/';
+      var disqus_title = 'Getting Started with Kalay Starter Kit';
+      var disqus_url = 'http://yoursite.com/2015/09/04/Getting Started with Kalay Starter Kit/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+
+  
+  
+
+  
+  
+
+
+</body>
+</html>

@@ -1,0 +1,720 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="CloudHs Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="萬物聯網的困難我們很習慣地透過網址瀏覽常見的新聞網站，或是從影音平台上觀看最新流行的音樂錄影帶。這中間一連串的過程不外是透過 DNS 伺服器將網址轉換成 IP 地址後再連線至該伺服器。也就是說只要知道一台提供服務的公用伺服器 IP 地址，我們便可以連線至該伺服器取得服務。
+隨著網際網路逐漸盛行，全世界連上網路的裝置愈來愈多，伴隨著 IPv4 地址日漸短少，於是在 1990 年代中期，NAT （Ne">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IoT and NAT">
+<meta property="og:url" content="http://yoursite.com/2016/02/21/IoT and NAT/index.html">
+<meta property="og:site_name" content="CloudHs Blog">
+<meta property="og:description" content="萬物聯網的困難我們很習慣地透過網址瀏覽常見的新聞網站，或是從影音平台上觀看最新流行的音樂錄影帶。這中間一連串的過程不外是透過 DNS 伺服器將網址轉換成 IP 地址後再連線至該伺服器。也就是說只要知道一台提供服務的公用伺服器 IP 地址，我們便可以連線至該伺服器取得服務。
+隨著網際網路逐漸盛行，全世界連上網路的裝置愈來愈多，伴隨著 IPv4 地址日漸短少，於是在 1990 年代中期，NAT （Ne">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160221_001.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160221_002.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160221_003.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160221_004.png">
+<meta property="og:updated_time" content="2016-02-23T17:07:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IoT and NAT">
+<meta name="twitter:description" content="萬物聯網的困難我們很習慣地透過網址瀏覽常見的新聞網站，或是從影音平台上觀看最新流行的音樂錄影帶。這中間一連串的過程不外是透過 DNS 伺服器將網址轉換成 IP 地址後再連線至該伺服器。也就是說只要知道一台提供服務的公用伺服器 IP 地址，我們便可以連線至該伺服器取得服務。
+隨著網際網路逐漸盛行，全世界連上網路的裝置愈來愈多，伴隨著 IPv4 地址日漸短少，於是在 1990 年代中期，NAT （Ne">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> IoT and NAT | CloudHs Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">CloudHs Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            歸檔
+          </a>
+        </li>
+      
+
+      
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                IoT and NAT
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">發表於</span>
+            <time itemprop="dateCreated" datetime="2016-02-21T00:00:00+08:00" content="2016-02-21">
+              2016-02-21
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/02/21/IoT and NAT/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/02/21/IoT and NAT/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="萬物聯網的困難"><a href="#萬物聯網的困難" class="headerlink" title="萬物聯網的困難"></a>萬物聯網的困難</h1><p>我們很習慣地透過網址瀏覽常見的新聞網站，或是從影音平台上觀看最新流行的音樂錄影帶。這中間一連串的過程不外是透過 DNS 伺服器將網址轉換成 IP 地址後再連線至該伺服器。也就是說只要知道一台提供服務的公用伺服器 IP 地址，我們便可以連線至該伺服器取得服務。</p>
+<p>隨著網際網路逐漸盛行，全世界連上網路的裝置愈來愈多，伴隨著 IPv4 地址日漸短少，於是在 1990 年代中期，NAT （Network Address Traversal，網路地址轉換）作為解決 IPv4 短缺而保留 IP 地址所產出的解決方案。這種技術是一種在 IP 封包通過路由器或防火牆時重寫來源 IP 地址或目的 IP 地址，普遍用在擁有多台主機，但卻只通過一個公有 IP 地址訪問網路網路的私有網路，該技術大幅降低了對 IPv4 地址的需求，但也產生了另一個問題：NAT 穿透問題。</p>
+<p>NAT 穿透問題也就是位於 NAT 內部的私有網路得以透過 NAT 技術訪問外部公有 IP 地址，但外部網路卻無法輕易訪問位於 NAT 內部私有網路的裝置，換句話說，若是手上的任一裝置在 NAT 的另一端時，必須克服 NAT 穿透的問題，方得能連線至該裝置，也就是說要萬物聯網，首先也必須克服 NAT 穿透問題。</p>
+<h1 id="NAT-的種類"><a href="#NAT-的種類" class="headerlink" title="NAT 的種類"></a>NAT 的種類</h1><p>我們知道 NAT 技術作用在路由器上，用作私、公有地址轉換以及通訊埠（Port）的映射（Mapping），NAT 技術可以分為幾種類型：</p>
+<ul>
+<li>完全圓錐型（Full cone NAT）</li>
+<li>受限圓錐型（Address-restricted cone NAT）</li>
+<li>通訊埠受限圓錐型（Port-restricted cone NAT）</li>
+<li>對稱型（Symmetric NAT）</li>
+</ul>
+<h2 id="完全圓錐型（Full-cone-NAT）"><a href="#完全圓錐型（Full-cone-NAT）" class="headerlink" title="完全圓錐型（Full cone NAT）"></a>完全圓錐型（Full cone NAT）</h2><p>一個內部 IP 地址（iAddr:Port1）透過 NAT 映射到外部地址（eAddr:Port2）並綁定，所有發自 iAddr:Port1 的封包都經由 eAddr:Port2 向外發送。任意外部主機都能通過 eAddr:Port2 發送封包至 iAddr:Port1，也就是說 NAT 做單純地做了位址轉換，並未對進出的封包做出限制。</p>
+<p>以下圖為例，一個 Client 的 IP 地址 （192.168.0.100: 12345 ），透過 NAT 映射到外部地址（203.66.100.210:23456）並綁定，在 Client 中透過 Port 12345 向外發送的封包都藉由 NAT 的 Port 23456 往外發送。任何外部主機如 Server 2可透過 IP 地址（203.66.100.210:23456）發送封包至 Client（192.168.0.100:12345）。</p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160221_001.png" alt="完全圓錐型 NAT"></p>
+<h2 id="受限圓錐型（Address-restricted-cone-NAT）"><a href="#受限圓錐型（Address-restricted-cone-NAT）" class="headerlink" title="受限圓錐型（Address-restricted cone NAT）"></a>受限圓錐型（Address-restricted cone NAT）</h2><p>一個內部 IP 地址（iAddr:Port1）透過 NAT 映射到外部地址（eAddr:Port2）並綁定，所有發自 iAddr:Port1 的封包都經由 eAddr:Port2 向外發送，曾經收到來自 eAddr2:Port2 發送封包的任一主機都能通過 eAddr:Port2 發送封包至 iAddr:Port1。換言之，NAT 會記住目的端的 IP 地址，從其他地址進來的封包會被 NAT 阻擋。</p>
+<p>以下圖為例，一個 Client 的 IP 地址（192.168.0.100:12345），透過 NAT 映射到外部地址（203.66.100.210:23456），在Client 中透過 Port 12345 向外發送的封包都藉由 NAT 的 Port 23456 往外發送，曾經收到來自 203.66.100.210:23456 發送封包的主機如 Server 1 都能通過 203.66.100.210:23456 發送封包至 Client（192.168.0.100:12345）；由於 203.66.100.210:23456 並沒有發送封包給 Server 2，因此 Server 2 無法透過 203.66.100.210:23456 發送封包給 Client。</p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160221_002.png" alt="受限圓錐型 NAT"></p>
+<h2 id="通訊埠受限圓錐型（Port-restricted-cone-NAT）"><a href="#通訊埠受限圓錐型（Port-restricted-cone-NAT）" class="headerlink" title="通訊埠受限圓錐型（Port-restricted cone NAT）"></a>通訊埠受限圓錐型（Port-restricted cone NAT）</h2><p>類似於受限圓錐型 NAT（Address-restricted cone NAT），但多了通訊埠的限制，也就是說 NAT 會記住目的端的 IP 地址及通訊埠，只有該目的端的 IP 地址及通訊埠才能傳送封包給發送端。</p>
+<p>以下圖為例，Client 透過 NAT 將封包發送 Server 1 的 Port 10000，在 Port-restricted cone NAT 的環境下，只有 Server 1 的 Port 10000 能夠透過 203.66.100.210:23456 發送封包給 Client（192.168.0.100:12345）。</p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160221_003.png" alt="通訊埠受限圓錐型 NAT"></p>
+<h2 id="對稱型（Symmetric-NAT）"><a href="#對稱型（Symmetric-NAT）" class="headerlink" title="對稱型（Symmetric NAT）"></a>對稱型（Symmetric NAT）</h2><p>與前三項 NAT 類型皆不同，對稱型 NAT 在同一內部地址與通訊埠到一個特定目的地址與通訊埠，都會在 NAT 映射一個獨特的外部地址及通訊埠，在 NAT 內一個內部地址（IP_ADDR:PORT）如發往不同目的地，都會對應到不同的外部地址（IP_ADDR:PORT）。也就是說，只有曾收到過內部主機封包的外部主機，才能發回封包。</p>
+<p>以下圖為例，Client 向 Server 1發送封包，會在 Symmetric NAT 中映射一個地址 203.66.100.210:23456，Server 1 可透過 203.66.100.210:23456 傳送封包至 Client 的內部地址 192.168.0.100:12345。另 Client 向 Server 3 的 Port 34567傳送封包，因為 Symmetric NAT 的特性，會在 Symmetric NAT 中映射一個新的地址 203.66.100.210:24567，Server 3 可利用 Port 34567 透過 203.66.100.210:23456 向 Client 192.168.0.100:13456 發送封包，而 Server 3 無法利用另一個通訊埠（如 Port 39876）向 Client 發送封包。最後，Server 2 因為從未接收到 Client 傳來的封包，因此無法發送封包給Client。</p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160221_004.png" alt="對稱型 NAT"></p>
+<h1 id="連線至另一端"><a href="#連線至另一端" class="headerlink" title="連線至另一端"></a>連線至另一端</h1><p>一個透過 NAT 連線上網的裝置，會因為 NAT 加上的限制，而無法再與另一端位於 NAT 內部的裝置建立連線，於是 NAT 穿透（NAT Traversal）便成為萬物聯網要克服的重要課題之一。發展至今，穿透 NAT 的技術方法主要仍基於幾個概念：</p>
+<ul>
+<li>位於 NAT 內部的裝置，向一個位於公有 IP 地址的伺服器發出請求，請其告知裝置本身的公有 IP 地址及通訊埠。</li>
+<li>位於 NAT 內部的裝置，向一個位於公有 IP 地址的伺服器發出請求，請其協助與欲連線的對端裝置建立連線，或請協助傳遞封包。</li>
+</ul>
+<p>目前基於上述概念已發展出幾種常用的幾種 NAT 穿透方法：</p>
+<ul>
+<li>UPnP (Universal Plug and Play)</li>
+<li>STUN (Simple Traversal of UDP Through Network Address Translators)</li>
+<li>TURN (Traversal Using Relay NAT)</li>
+<li>ALG (Application Layer Gateway)</li>
+<li>ICE (Interactive Connectivity Establishment)</li>
+</ul>
+<blockquote>
+<p>參考資料：<a href="https://zh.wikipedia.org/wiki/网络地址转换" target="_blank" rel="external">https://zh.wikipedia.org/wiki/网络地址转换</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/01/Learn RxSwift/" rel="next" title="Learn RxSwift">
+                <i class="fa fa-chevron-left"></i> Learn RxSwift
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Cloud Hsiao" />
+          <p class="site-author-name" itemprop="name">Cloud Hsiao</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+          
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">標籤</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#萬物聯網的困難"><span class="nav-number">1.</span> <span class="nav-text">萬物聯網的困難</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NAT-的種類"><span class="nav-number">2.</span> <span class="nav-text">NAT 的種類</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#完全圓錐型（Full-cone-NAT）"><span class="nav-number">2.1.</span> <span class="nav-text">完全圓錐型（Full cone NAT）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#受限圓錐型（Address-restricted-cone-NAT）"><span class="nav-number">2.2.</span> <span class="nav-text">受限圓錐型（Address-restricted cone NAT）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通訊埠受限圓錐型（Port-restricted-cone-NAT）"><span class="nav-number">2.3.</span> <span class="nav-text">通訊埠受限圓錐型（Port-restricted cone NAT）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#對稱型（Symmetric-NAT）"><span class="nav-number">2.4.</span> <span class="nav-text">對稱型（Symmetric NAT）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#連線至另一端"><span class="nav-number">3.</span> <span class="nav-text">連線至另一端</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cloud Hsiao</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  
+
+
+  
+
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'cloudhsiao';
+      var disqus_identifier = '2016/02/21/IoT and NAT/';
+      var disqus_title = 'IoT and NAT';
+      var disqus_url = 'http://yoursite.com/2016/02/21/IoT and NAT/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+
+  
+  
+
+  
+  
+
+
+</body>
+</html>

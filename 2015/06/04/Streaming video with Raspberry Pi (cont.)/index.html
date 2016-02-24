@@ -1,0 +1,738 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="CloudHs Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="上一次我們知道如何使用 raspistill 以及 raspivid 來實現影像串流。現在我要來嘗試如何在 Raspberry Pi 上實現 HLS stream。
+在正式開始之前，先來看一下 HLS (HTTP Live Streaming) 吧，HLS 是蘋果公司推出的一款基於 HTTP 協定的影音串流協定，其檔案格式在 Video 端是以 H.264 編碼，在 Audio 方面則是以 MP3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Streaming video with Raspberry Pi (cont.)">
+<meta property="og:url" content="http://yoursite.com/2015/06/04/Streaming video with Raspberry Pi (cont.)/index.html">
+<meta property="og:site_name" content="CloudHs Blog">
+<meta property="og:description" content="上一次我們知道如何使用 raspistill 以及 raspivid 來實現影像串流。現在我要來嘗試如何在 Raspberry Pi 上實現 HLS stream。
+在正式開始之前，先來看一下 HLS (HTTP Live Streaming) 吧，HLS 是蘋果公司推出的一款基於 HTTP 協定的影音串流協定，其檔案格式在 Video 端是以 H.264 編碼，在 Audio 方面則是以 MP3">
+<meta property="og:image" content="http://upload.wikimedia.org/wikipedia/commons/4/45/A_small_cup_of_coffee.JPG">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_001.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_002.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_003.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_004.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_005.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_005.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_007.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_008.png">
+<meta property="og:updated_time" content="2016-02-24T01:23:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Streaming video with Raspberry Pi (cont.)">
+<meta name="twitter:description" content="上一次我們知道如何使用 raspistill 以及 raspivid 來實現影像串流。現在我要來嘗試如何在 Raspberry Pi 上實現 HLS stream。
+在正式開始之前，先來看一下 HLS (HTTP Live Streaming) 吧，HLS 是蘋果公司推出的一款基於 HTTP 協定的影音串流協定，其檔案格式在 Video 端是以 H.264 編碼，在 Audio 方面則是以 MP3">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Streaming video with Raspberry Pi (cont.) | CloudHs Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">CloudHs Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            歸檔
+          </a>
+        </li>
+      
+
+      
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Streaming video with Raspberry Pi (cont.)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">發表於</span>
+            <time itemprop="dateCreated" datetime="2015-06-04T00:00:00+08:00" content="2015-06-04">
+              2015-06-04
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/06/04/Streaming video with Raspberry Pi (cont.)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/06/04/Streaming video with Raspberry Pi (cont.)/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上一次我們知道如何使用 <code>raspistill</code> 以及 <code>raspivid</code> 來實現影像串流。現在我要來嘗試如何在 Raspberry Pi 上實現 HLS stream。</p>
+<p>在正式開始之前，先來看一下 HLS (HTTP Live Streaming) 吧，HLS 是蘋果公司推出的一款基於 HTTP 協定的影音串流協定，其檔案格式在 Video 端是以 H.264 編碼，在 Audio 方面則是以 MP3, HE-AAC 或 AC-3 格式編碼。也因為如此，所以我們必須把從 Camear 取得的影音資料打包成 HLS 格式，所幸 FFmpeg 已經提供了這部分的功能。</p>
+<h2 id="Build-Library"><a href="#Build-Library" class="headerlink" title="Build Library"></a>Build Library</h2><p>FFmpeg 是一個自由軟體，可以執行 Audio, Video 多種格式的錄影、轉檔及串流功能，其中分成幾個組件 (ex. ffmpeg, ffplayer, ffserver)，這些組件也會使用像 libavcodec (audio, video codec), libavformat (audio, video converter) 等函式庫，FFmpeg 同時也可以使用外部函式庫來加強對於音視頻編碼的支援廣度。我們待會也會一併把 x264, faac, lame 編入 ffmpeg 中。</p>
+<h3 id="Build-x264-H264-encoder"><a href="#Build-x264-H264-encoder" class="headerlink" title="Build x264 (H264 encoder)"></a>Build x264 (H264 encoder)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://git.videolan.org/x264</span><br><span class="line"><span class="built_in">cd</span> x264</span><br><span class="line">./configure --disable-asm --enable-shared</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<h3 id="Build-faac-AAC-encoder"><a href="#Build-faac-AAC-encoder" class="headerlink" title="Build faac (AAC encoder)"></a>Build faac (AAC encoder)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://downloads/sourceforge.net/project/faac/faac-src/faac-<span class="number">1.28</span>/faac-<span class="number">1.28</span>.tar.gz</span><br><span class="line">tar xzvf faac-<span class="number">1.28</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> faac-<span class="number">1.28</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<h3 id="Build-lame-MP3-encoder"><a href="#Build-lame-MP3-encoder" class="headerlink" title="Build lame (MP3 encoder)"></a>Build lame (MP3 encoder)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://downloads.sourceforge.net/project/lame/lame/<span class="number">3.99</span>/lame-<span class="number">3.99</span>.tar.gz</span><br><span class="line">tar xzvf lame-<span class="number">3.99</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> lame-<span class="number">3.99</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<h3 id="Build-FFmpeg"><a href="#Build-FFmpeg" class="headerlink" title="Build FFmpeg"></a>Build FFmpeg</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://source.ffmpeg.org/ffmpeg.git</span><br><span class="line"><span class="built_in">cd</span> ffmpeg</span><br><span class="line">./configure --enable-shared --enable-gpl --prefix=/usr/<span class="built_in">local</span> --enable-nofree --enablelibmp3lame --enable-libfaac --enable-libx264 --enable-version3 --disable-mmx</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>由於我們用到了 x264，因此在編譯 FFMpeg 時必須選用 GPL license。另外一提，在編譯 FFmpeg 其實是很花時間的工作，讓我們喝杯咖啡休息一下吧…</p>
+<p><img src="http://upload.wikimedia.org/wikipedia/commons/4/45/A_small_cup_of_coffee.JPG" alt="alt coffee"></p>
+<p>喝完咖啡，又睡了個午覺後，所有的 Library 終於都已經就位了 (/usr/local)，這時候趕緊來試一下 ffmpeg 吧…咦？為什麼會發生錯誤？</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg: error <span class="keyword">while</span> loading shared libraries: libavdevice.so.<span class="number">56</span>: cannot open shared object file: No such file or directory</span><br></pre></td></tr></table></figure>
+<p>原來是 ffmpeg 會用到的函式庫 (ex. libavcodec) 所在目錄不在 library search path 裡，因此才會無法執行，這時候可以透過下述二種方式擇一進行：</p>
+<p>Solution 1:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/usr/<span class="built_in">local</span>/lib</span><br><span class="line">ffmpeg</span><br></pre></td></tr></table></figure>
+<p>Solution 2:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/usr/<span class="built_in">local</span>/lib ffmpeg</span><br></pre></td></tr></table></figure>
+<p>重新再執行一次，耶！成功了！</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg version N-<span class="number">72416</span>-gc7bd6a5 Copyright (c) <span class="number">2000</span>-<span class="number">2015</span> the FFmpeg developers</span><br><span class="line">  built with gcc <span class="number">4.6</span> (Debian <span class="number">4.6</span>.<span class="number">3</span>-<span class="number">14</span>+rpi1)</span><br><span class="line">  configuration: --enable-shared --enable-gpl --prefix=/usr/<span class="built_in">local</span> --enable-nonfree --enable-libmp3lame --enable-libfaac --enable-libx264 --enable-version3 --disable-mmx</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h2 id="Setting-up-the-streaming-server"><a href="#Setting-up-the-streaming-server" class="headerlink" title="Setting up the streaming server"></a>Setting up the streaming server</h2><p>為了能讓外部連線進來，我們先使用 python 啟用一個 http service。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m SimpleHTTPServer &amp;</span><br></pre></td></tr></table></figure>
+<p> 接著我們使用 <code>raspvid</code> 來產生我們需要的 video stream data。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rm -rf live*</span><br><span class="line">mkfifo live.h264</span><br><span class="line">raspivid -hf -vf -w <span class="number">640</span> -h <span class="number">480</span> -fps <span class="number">25</span> -g <span class="number">25</span> -b <span class="number">128000</span> -t -o - &gt; live.h264</span><br></pre></td></tr></table></figure>
+<p>我們使用 <code>mkfifo</code> 透過 <a href="http://en.wikipedia.org/wiki/Named_pipe" target="_blank" rel="external">named pipe</a> 方式讓 FFmpeg 讀取由 raspivid 輸出的 streaming data。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/usr/<span class="built_in">local</span>/lib ffmpeg -y \\</span><br><span class="line">  -i live.h264 \\</span><br><span class="line">  -c:v copy -b:v <span class="number">128</span>k \\</span><br><span class="line">  -c:a libfaac -b:a <span class="number">128</span>k \\</span><br><span class="line">  -map <span class="number">0</span>:<span class="number">0</span>  \\</span><br><span class="line">  <span class="operator">-f</span> segment \\</span><br><span class="line">  -segment_time <span class="number">8</span> \\</span><br><span class="line">  -segment_format mpegts \\</span><br><span class="line">  -segment_list <span class="string">"live.m3u8"</span> \\</span><br><span class="line">  -segment_list_size <span class="number">720</span> \\</span><br><span class="line">  -segment_list_flags live \\</span><br><span class="line">  -segment_list_<span class="built_in">type</span> m3u8 \\</span><br><span class="line">  <span class="string">"live%08d.ts"</span> &lt; /dev/null</span><br></pre></td></tr></table></figure>
+<p>由於我手上的 Raspberry Pi 沒有接麥克風，所以我拿掉了 audio 部分。<br>好了，現在執行 VLC 打開網址 <code>http://{the_ip}:8000/live.m3u8</code></p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_001.png" alt="alt screenshot"></p>
+<p>在完成 Video streaming server 端的設定後，我們要使用 Android 上的 VideoView 控件來實現 HLS 影像播放。<br>目前 Google 正在力推 Android Studio 作為 Android 開發的主要編輯器，我們就下載這套編輯器來使用吧。</p>
+<p>截至目前最新版本是 v.1.2.1.1，功能已經相當完整，距 2013 年 Google I/O 剛發表 v0.1 版本時，其整合的功能可說是天壤之別。</p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_002.png" alt="alt Android Studio welcome page"></p>
+<p>在成功安裝設定完成後，我們新建一個專案 “RPiPlayer”。</p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_003.png" alt="alt create project step1"></p>
+<p>選擇 SDK 版本，我個人習慣是選擇 Android 4.1 (Jelly Bean)。</p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_004.png" alt="alt create project step2"></p>
+<p>我們選擇一個空白的 Activity。</p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_005.png" alt="alt create project step3"></p>
+<p>保持預設的 Activity name。</p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_005.png" alt="alt create project step4"></p>
+<p>好了，讓我們寫一些代碼吧。<br>由於需要賦予 APP 有存取網路的權限，我們打開 <code>AndroidManifest.xml</code> 加入：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="title">uses-permission</span> <span class="attribute">android:name</span>=<span class="value">"android.permission.INTERNET"</span> /&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>然後再開啟 <code>activity_main.xml</code>，修改成：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">RelativeLayout</span></span><br><span class="line">    <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">xmlns:tools</span>=<span class="value">"http://schemas.android.com/tools"</span></span><br><span class="line">    <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span></span><br><span class="line">    <span class="attribute">android:paddingLeft</span>=<span class="value">"@dimen/activity_horizontal_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingRight</span>=<span class="value">"@dimen/activity_horizontal_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingTop</span>=<span class="value">"@dimen/activity_vertical_margin"</span></span><br><span class="line">    <span class="attribute">android:paddingBottom</span>=<span class="value">"@dimen/activity_vertical_margin"</span></span><br><span class="line">    <span class="attribute">tools:context</span>=<span class="value">".MainActivity"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">TextView</span></span><br><span class="line">        <span class="attribute">android:text</span>=<span class="value">"URL"</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:id</span>=<span class="value">"@+id/url"</span></span><br><span class="line">        <span class="attribute">android:layout_alignParentTop</span>=<span class="value">"true"</span></span><br><span class="line">        <span class="attribute">android:layout_alignParentLeft</span>=<span class="value">"true"</span></span><br><span class="line">        <span class="attribute">android:layout_alignParentStart</span>=<span class="value">"true"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">EditText</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"fill_parent"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:id</span>=<span class="value">"@+id/edtUrl"</span></span><br><span class="line">        <span class="attribute">android:layout_alignParentTop</span>=<span class="value">"true"</span></span><br><span class="line">        <span class="attribute">android:layout_toRightOf</span>=<span class="value">"@+id/url"</span></span><br><span class="line">        <span class="attribute">android:layout_toLeftOf</span>=<span class="value">"@+id/btnGo"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">Button</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:text</span>=<span class="value">"Go"</span></span><br><span class="line">        <span class="attribute">android:id</span>=<span class="value">"@+id/btnGo"</span></span><br><span class="line">        <span class="attribute">android:layout_alignParentRight</span>=<span class="value">"true"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">VideoView</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:id</span>=<span class="value">"@+id/videoView"</span></span><br><span class="line">        <span class="attribute">android:layout_below</span>=<span class="value">"@+id/edtUrl"</span></span><br><span class="line">        <span class="attribute">android:layout_marginTop</span>=<span class="value">"20dip"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="title">RelativeLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>完成後，從 Android Studio 上可以看到 APP 的 Layout</p>
+<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_007.png" alt="alt APP screenshot"></p>
+<p>最後我們來編輯 Activity 程式碼：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">	...</span><br><span class="line">	Button btnGo = (Button) findViewById(R.id.btnGo);</span><br><span class="line">	btnGo.setOnClickListener(onBtnGoClicked);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> View.OnClickListener onBtnGoClicked = <span class="keyword">new</span> View.OnClickListener()&#123;</span><br><span class="line"></span><br><span class="line">	<span class="annotation">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">		EditText edtUrl = (EditText) findViewById(R.id.edtUrl);</span><br><span class="line">		VideoView videoView = (VideoView) findViewById(R.id.videoView);</span><br><span class="line"></span><br><span class="line">		String url = edtUrl.getText().toString();</span><br><span class="line">		videoView.setVideoURI(Uri.parse(url));</span><br><span class="line">		videoView.setMediaController(<span class="keyword">new</span> MediaController(MainActivity.<span class="keyword">this</span>));</span><br><span class="line">		videoView.start();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>然後，開啟模擬器或是接上你的手機來試試，在 APP 上的 EditText 內輸入 HLS 的網址，按下 GO 按鈕。<br><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150603_008.png" alt="alt APP screenshot"></p>
+<p>耶！看到影像了！</p>
+<hr>
+<p>經過這個系列的文章，我們學會了如何使用 Raspberry Pi 以及 Raspberry Pi Camera module 來獲取圖片、錄影，以及輸出成 RTSP、HLS 等串流影像。<br>我們也製作了一個簡單的 Android APP 來觀看 HLS 串流影像。</p>
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/06/03/Streaming video with Raspberry Pi/" rel="next" title="Streaming video with Raspberry Pi">
+                <i class="fa fa-chevron-left"></i> Streaming video with Raspberry Pi
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/06/09/Play audio with Raspberry Pi/" rel="prev" title="Play audio with Raspberry Pi">
+                Play audio with Raspberry Pi <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Cloud Hsiao" />
+          <p class="site-author-name" itemprop="name">Cloud Hsiao</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+          
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">標籤</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Build-Library"><span class="nav-number">1.</span> <span class="nav-text">Build Library</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Build-x264-H264-encoder"><span class="nav-number">1.1.</span> <span class="nav-text">Build x264 (H264 encoder)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Build-faac-AAC-encoder"><span class="nav-number">1.2.</span> <span class="nav-text">Build faac (AAC encoder)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Build-lame-MP3-encoder"><span class="nav-number">1.3.</span> <span class="nav-text">Build lame (MP3 encoder)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Build-FFmpeg"><span class="nav-number">1.4.</span> <span class="nav-text">Build FFmpeg</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Setting-up-the-streaming-server"><span class="nav-number">2.</span> <span class="nav-text">Setting up the streaming server</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cloud Hsiao</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  
+
+
+  
+
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'cloudhsiao';
+      var disqus_identifier = '2015/06/04/Streaming video with Raspberry Pi (cont.)/';
+      var disqus_title = 'Streaming video with Raspberry Pi (cont.)';
+      var disqus_url = 'http://yoursite.com/2015/06/04/Streaming video with Raspberry Pi (cont.)/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+
+  
+  
+
+  
+  
+
+
+</body>
+</html>

@@ -1,0 +1,748 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="CloudHs Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="這次的實作是在 Raspberry Pi 上使用 Camera module，並使用 raspivid 以及 ffmpeg 實現 Video streaming server，並在手機上看到 Camera 的影像。
+Requirements
+Raspberry Pi Model B Gen.2
+Raspberry Pi Camera Module
+一顆熱情的心
+
+Equipment setup (">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Streaming video with Raspberry Pi">
+<meta property="og:url" content="http://yoursite.com/2015/06/03/Streaming video with Raspberry Pi/index.html">
+<meta property="og:site_name" content="CloudHs Blog">
+<meta property="og:description" content="這次的實作是在 Raspberry Pi 上使用 Camera module，並使用 raspivid 以及 ffmpeg 實現 Video streaming server，並在手機上看到 Camera 的影像。
+Requirements
+Raspberry Pi Model B Gen.2
+Raspberry Pi Camera Module
+一顆熱情的心
+
+Equipment setup (">
+<meta property="og:image" content="https://www.raspberrypi.org/documentation/configuration/images/raspi-config.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150602_001.png">
+<meta property="og:updated_time" content="2016-02-24T01:21:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Streaming video with Raspberry Pi">
+<meta name="twitter:description" content="這次的實作是在 Raspberry Pi 上使用 Camera module，並使用 raspivid 以及 ffmpeg 實現 Video streaming server，並在手機上看到 Camera 的影像。
+Requirements
+Raspberry Pi Model B Gen.2
+Raspberry Pi Camera Module
+一顆熱情的心
+
+Equipment setup (">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Streaming video with Raspberry Pi | CloudHs Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">CloudHs Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            歸檔
+          </a>
+        </li>
+      
+
+      
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Streaming video with Raspberry Pi
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">發表於</span>
+            <time itemprop="dateCreated" datetime="2015-06-03T00:00:00+08:00" content="2015-06-03">
+              2015-06-03
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/06/03/Streaming video with Raspberry Pi/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/06/03/Streaming video with Raspberry Pi/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>這次的實作是在 Raspberry Pi 上使用 Camera module，並使用 raspivid 以及 ffmpeg 實現 Video streaming server，並在手機上看到 Camera 的影像。</p>
+<h3 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h3><ul>
+<li>Raspberry Pi Model B Gen.2</li>
+<li>Raspberry Pi Camera Module</li>
+<li><strong>一顆熱情的心</strong></li>
+</ul>
+<h3 id="Equipment-setup-hardware"><a href="#Equipment-setup-hardware" class="headerlink" title="Equipment setup (hardware)"></a>Equipment setup (hardware)</h3><p>當取得 Raspberry Pi &amp; Camera 後，我們首先將其組裝起來，在組裝 Camera  之前請先消除身上的靜電，以免損壞了 Camera (畢竟一個也不便宜呢！)。<br>硬體組裝的步驟大致為：</p>
+<ol>
+<li>找到 Camera 的插槽，這個插槽位於 HDMI 以及音效孔之間，輕輕地向上拉開。</li>
+<li>將 Camera 模組的排線插入插槽中，排線尾端的金屬接頭朝向 HDMI 孔的方向。</li>
+<li>將插栓向下推 (基本上無論怎麼推，排線尾端的金屬接頭都會外露)</li>
+</ol>
+<p>在組裝完成後，我們來設定軟體的部分吧。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get dist-upgrade</span><br><span class="line">sudo raspi-config</span><br></pre></td></tr></table></figure>
+<p><img src="https://www.raspberrypi.org/documentation/configuration/images/raspi-config.png" alt="alt raspi-config"><br>請選擇 <strong>Enable Camera</strong> 進入下一頁後選擇 <strong>Enable</strong>，然後重新啟動 Raspiberry Pi。</p>
+<h3 id="Raspberry-Pi-Camera-的使用"><a href="#Raspberry-Pi-Camera-的使用" class="headerlink" title="Raspberry Pi Camera 的使用"></a>Raspberry Pi Camera 的使用</h3><p>既然我們都接好 Camera 了，那為何不先玩一下呢？<br>Raspberry Pi 很善良的地先提供了二組命令讓我們使用 <code>raspistill</code> 以及 <code>raspivid</code>。</p>
+<h4 id="raspistill"><a href="#raspistill" class="headerlink" title="raspistill"></a>raspistill</h4><p>首先我們來看 <code>raspistill</code>，在 terminal 中直接鍵入 <code>raspistill</code> 不加任何參加後可以直接得到該命令的 help message，從 help message 的說明可以得知是用來在一段時間內產生一個 still file。說白了，就是讓你可以從 Camera 上拿到一張圖啦！</p>
+<p>以下示範取得一張 JPEG file</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">raspistill -o image.jpg</span><br></pre></td></tr></table></figure>
+<p><code>-o</code> 代表輸出的資料要存放的地方，如果給定的是一個檔名的話，則會存成該檔案。<br>以下取得一張 320 x 240 的 JPEG file</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">raspistill -w <span class="number">320</span> -h <span class="number">240</span> -o image.jpg</span><br></pre></td></tr></table></figure>
+<p>取得一張上下顛倒 (vertical flip) 及影像 (mirror) 的 JPEG file (<em>通常是因為你的 Camera module 會躺在桌上，看到的圖都是顛倒的</em>)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">raspistill -vf -hf -o image.jpg</span><br></pre></td></tr></table></figure>
+<p>在一分鐘內，每隔一秒抓一張圖 (*拿到這些圖後，可以做成縮時錄影)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">raspistill -t <span class="number">60</span>*<span class="number">1000</span> -tl <span class="number">1</span>*<span class="number">1000</span> -o image%<span class="number">02</span>d.jpg</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>對縮時錄影有興趣的話可以參考<a href="http://computers.tutsplus.com/tutorials/creating-time-lapse-photography-with-a-raspberry-pi--cms-20794" target="_blank" rel="external">這篇文章</a></p>
+</blockquote>
+<p>也可以自己寫一隻小程式，透過 pipe 將 stdin 的 data 讀取進來。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">raspistill -vf -o - | my_program</span><br></pre></td></tr></table></figure>
+<p>剛才提到 <code>-o</code> 為資料輸出的地方，如果要輸出至 stdout 可以寫成 <code>-o -</code>。</p>
+<p>接著使用 <code>raspistill</code> 輸出 M-JPEG 吧。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install cmake libjpeg62-dev</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/jacksonliam/mjpg-streamer.git</span><br><span class="line"><span class="built_in">cd</span> mjpg-streamer/mjpg-streamer-experimental/</span><br></pre></td></tr></table></figure>
+<p>接下來我們要修改一些 Makefile，請使用任一套你能使用的文字編輯器打開 Makefile，然後找到下面這一行，並把前面的 “#” 移除並存檔。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="preprocessor"># PLUGINS += input_file.so</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>修改完後，我們進行編譯動作<code>make clean all</code>。</p>
+<p>前面做了這麼多，也就表示我們將會使用 mjpg-streamer 這個程式來協助我們完成 MJPEG streamer 的動作，在成功安裝好 mjpg-streamer 之後，可以先試一下效果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LD_LIBRARY_PATH=./ ./mjpg_streamer -i <span class="string">"input_raspicam.so"</span> -o <span class="string">"output_http.so"</span></span><br></pre></td></tr></table></figure>
+<p>現在開啟 VLC 並輸入網址 <code>http://{the_ip}:8080/?action=stream</code>，哇！可以看到影像了。</p>
+<p>不過這一節談的是<code>raspistill</code>，當然是無論如何也要牽扯一下啦。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">raspistill -bm -n -vf -hf -w <span class="number">640</span> -h <span class="number">480</span> -q <span class="number">50</span> -o frame.jpg -t <span class="number">0</span> -tl <span class="number">200</span> &amp;</span><br><span class="line">LD_LIBRARY_PATH=./ ./mjpg_streamer -i <span class="string">"input_file.so -f . -n frame.jpg"</span> -o <span class="string">"output_http.so -w ./www"</span></span><br></pre></td></tr></table></figure>
+<p>在 raspistill 中，我們開啟了 <code>-bm</code> 暴力抓圖模式，以及 <code>-t 0 -tl 200 -o frame.jpg</code> 每隔 0.2 秒刷新 frame.jpg 這張圖。<br>在 mjpg_streamer 中可以透過 input_file 這個 plug-in 將 frame.jpg 讀進來產生動態圖的效果，我們在 <code>-o</code> 參數中加入了 <code>-w</code> 來指定 http folder。</p>
+<p>接著在瀏覽器上輸入 <code>http://%IP%:8080/</code><br><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150602_001.png" alt="alt snapshot"></p>
+<h4 id="raspivid"><a href="#raspivid" class="headerlink" title="raspivid"></a>raspivid</h4><p>相同的，help message 告訴我們這組命令會讓我們從 camera module 上得到一段 h.264 格式的 video。</p>
+<p>我們馬上來抓一段視頻。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">raspivid -o video.h264</span><br></pre></td></tr></table></figure>
+<p>透過上述的命令，我們可以得到一段預設為五秒的 h.264 video，最後這段影片可以直接透過 <a href="http://www.videolan.org" target="_blank" rel="external">VLC</a> 播放。</p>
+<blockquote>
+<p>一種簡單的作法是透過 <code>scp</code> 把 video.h264 拷貝回自己的電腦上播放 <code>scp pi@IP:/YOUR_FOLDER/video.h264 ./</code>。</p>
+</blockquote>
+<p>讓我們來錄一段 1280x720, bitrate = 512000, fps = 25 長度 30 秒的影片：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">raspivid -w <span class="number">1280</span> -h <span class="number">720</span> -fps <span class="number">25</span> -b <span class="number">512000</span> -t <span class="number">30000</span> -o video.h264</span><br></pre></td></tr></table></figure>
+<p>也可以透過 VLC 產生 RTSP stream：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">raspivid -t <span class="number">0</span> -w <span class="number">640</span> -h <span class="number">480</span> -fps <span class="number">10</span> -o - | cvlc -vvv stream:///dev/stdin \\</span><br><span class="line">--sout <span class="string">'#rtp&#123;sdp=rtsp://:8554/&#125;'</span> :demux=h264</span><br></pre></td></tr></table></figure>
+<p>透過 <code>raspivid</code> 取得 video data，並輸出至 stdout，然後使用 <code>cvlc</code> (a VLC console program) 來轉換成 RTSP stream，<code>-vvv</code> 指的是印出 verbose 訊息 (-v or -vv or -vvv)，<code>stream:</code> 參數表示其串流影像來源，在此例上是 stdin；<code>--sout</code> 參數後面表示將會把影像串流輸出成 RTSP 格式。<br>這時候你可以透過手機或電腦上的 RTSP player 來連線至 <code>rtsp://[the ip]:8554/</code> 來播放囉。</p>
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/06/04/Streaming video with Raspberry Pi (cont.)/" rel="prev" title="Streaming video with Raspberry Pi (cont.)">
+                Streaming video with Raspberry Pi (cont.) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Cloud Hsiao" />
+          <p class="site-author-name" itemprop="name">Cloud Hsiao</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+          
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">標籤</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Requirements"><span class="nav-number">1.</span> <span class="nav-text">Requirements</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Equipment-setup-hardware"><span class="nav-number">2.</span> <span class="nav-text">Equipment setup (hardware)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raspberry-Pi-Camera-的使用"><span class="nav-number">3.</span> <span class="nav-text">Raspberry Pi Camera 的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#raspistill"><span class="nav-number">3.1.</span> <span class="nav-text">raspistill</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#raspivid"><span class="nav-number">3.2.</span> <span class="nav-text">raspivid</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cloud Hsiao</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  
+
+
+  
+
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'cloudhsiao';
+      var disqus_identifier = '2015/06/03/Streaming video with Raspberry Pi/';
+      var disqus_title = 'Streaming video with Raspberry Pi';
+      var disqus_url = 'http://yoursite.com/2015/06/03/Streaming video with Raspberry Pi/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+
+  
+  
+
+  
+  
+
+
+</body>
+</html>
