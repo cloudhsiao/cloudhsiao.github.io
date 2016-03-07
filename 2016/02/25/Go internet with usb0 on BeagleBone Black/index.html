@@ -46,6 +46,8 @@
 
 
 
+  
+
 
   <link rel="alternate" href="/atom.xml" title="CloudHs Blog" type="application/atom+xml" />
 
@@ -59,31 +61,19 @@
 
 
 
-<meta name="description" content="最近想在 Raspberry Pi 上播放音樂，於是在網路上搜尋了一下，發現可以透過  Apple AirPlay 技術讓 Raspberry Pi 成為家庭音樂中心，這邊將這幾天的搜尋成果整理了一下。
-讓 Raspberry Pi 發出聲音想讓 Raspberry Pi 發出聲音一般方法有：
-
-透過 HDMI interface。
-透過 3.5mm audio jack。所以可以先選定想要輸出聲">
+<meta name="description" content="前情提要之前在北科大使用 BeagleBone Black (BBB) 講課時遇到一個狀況，學校的電腦教室雖說每一台都配發有獨立的 Public IP（真的是很牛的學校，在如今 Public IP 短缺的時代，連電腦教室裡的每台電腦都可以有自己的 Public IP），但這些 IP 仍被學校網管單位限定以 MAC address 所綁定，因此學生們使用的 BBB 無法藉由這些 Public IP">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Play audio with Raspberry Pi">
-<meta property="og:url" content="http://yoursite.com/2015/06/09/Play audio with Raspberry Pi/index.html">
+<meta property="og:title" content="Go internet with usb0 on BeagleBone Black">
+<meta property="og:url" content="http://yoursite.com/2016/02/25/Go internet with usb0 on BeagleBone Black/index.html">
 <meta property="og:site_name" content="CloudHs Blog">
-<meta property="og:description" content="最近想在 Raspberry Pi 上播放音樂，於是在網路上搜尋了一下，發現可以透過  Apple AirPlay 技術讓 Raspberry Pi 成為家庭音樂中心，這邊將這幾天的搜尋成果整理了一下。
-讓 Raspberry Pi 發出聲音想讓 Raspberry Pi 發出聲音一般方法有：
-
-透過 HDMI interface。
-透過 3.5mm audio jack。所以可以先選定想要輸出聲">
-<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150609_001.png">
-<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150609_002.png">
-<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150609_003.png">
-<meta property="og:updated_time" content="2016-02-24T01:11:59.000Z">
+<meta property="og:description" content="前情提要之前在北科大使用 BeagleBone Black (BBB) 講課時遇到一個狀況，學校的電腦教室雖說每一台都配發有獨立的 Public IP（真的是很牛的學校，在如今 Public IP 短缺的時代，連電腦教室裡的每台電腦都可以有自己的 Public IP），但這些 IP 仍被學校網管單位限定以 MAC address 所綁定，因此學生們使用的 BBB 無法藉由這些 Public IP">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160303_001.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160303_002.png">
+<meta property="og:image" content="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160303_003.png">
+<meta property="og:updated_time" content="2016-03-07T14:58:42.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Play audio with Raspberry Pi">
-<meta name="twitter:description" content="最近想在 Raspberry Pi 上播放音樂，於是在網路上搜尋了一下，發現可以透過  Apple AirPlay 技術讓 Raspberry Pi 成為家庭音樂中心，這邊將這幾天的搜尋成果整理了一下。
-讓 Raspberry Pi 發出聲音想讓 Raspberry Pi 發出聲音一般方法有：
-
-透過 HDMI interface。
-透過 3.5mm audio jack。所以可以先選定想要輸出聲">
+<meta name="twitter:title" content="Go internet with usb0 on BeagleBone Black">
+<meta name="twitter:description" content="前情提要之前在北科大使用 BeagleBone Black (BBB) 講課時遇到一個狀況，學校的電腦教室雖說每一台都配發有獨立的 Public IP（真的是很牛的學校，在如今 Public IP 短缺的時代，連電腦教室裡的每台電腦都可以有自己的 Public IP），但這些 IP 仍被學校網管單位限定以 MAC address 所綁定，因此學生們使用的 BBB 無法藉由這些 Public IP">
 
 
 
@@ -101,7 +91,7 @@
   };
 </script>
 
-  <title> Play audio with Raspberry Pi | CloudHs Blog </title>
+  <title> Go internet with usb0 on BeagleBone Black | CloudHs Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -211,7 +201,7 @@
             
             
               
-                Play audio with Raspberry Pi
+                Go internet with usb0 on BeagleBone Black
               
             
           </h1>
@@ -223,8 +213,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">發表於</span>
-            <time itemprop="dateCreated" datetime="2015-06-09T00:00:00+08:00" content="2015-06-09">
-              2015-06-09
+            <time itemprop="dateCreated" datetime="2016-02-25T00:00:00+08:00" content="2016-02-25">
+              2016-02-25
             </time>
           </span>
 
@@ -234,8 +224,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2015/06/09/Play audio with Raspberry Pi/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/06/09/Play audio with Raspberry Pi/" itemprop="commentsCount"></span>
+                <a href="/2016/02/25/Go internet with usb0 on BeagleBone Black/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/02/25/Go internet with usb0 on BeagleBone Black/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -256,58 +246,27 @@
       
 
       
-        <p>最近想在 Raspberry Pi 上播放音樂，於是在網路上搜尋了一下，發現可以透過  Apple AirPlay 技術讓 Raspberry Pi 成為家庭音樂中心，這邊將這幾天的搜尋成果整理了一下。</p>
-<h2 id="讓-Raspberry-Pi-發出聲音"><a href="#讓-Raspberry-Pi-發出聲音" class="headerlink" title="讓 Raspberry Pi 發出聲音"></a>讓 Raspberry Pi 發出聲音</h2><p>想讓 Raspberry Pi 發出聲音一般方法有：</p>
+        <h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>之前在北科大使用 BeagleBone Black (BBB) 講課時遇到一個狀況，學校的電腦教室雖說每一台都配發有獨立的 Public IP（真的是很牛的學校，在如今 Public IP 短缺的時代，連電腦教室裡的每台電腦都可以有自己的 Public IP），但這些 IP 仍被學校網管單位限定以 MAC address 所綁定，因此學生們使用的 BBB 無法藉由這些 Public IP 上到 Internet。</p>
+<p>後來觀察到電腦教室內的電腦竟然安裝有二張網卡，於是我們想出了一種讓可上 Internet 的網卡開啟網路分享功能讓另一個網卡可以上網，再將 BBB 接至該網卡上完成設定的工作。</p>
+<p>但還是需要請系上或學生們自帶一條網路線，著實不便。後來想想既然我們可以使用 USB 線透過 ssh 連線到 BBB 上，那也許 BBB 也可以透過 USB 線上網。</p>
+<p>基於上述的想法，我們開始進行一些嘗試…</p>
+<h1 id="設定網路分享"><a href="#設定網路分享" class="headerlink" title="設定網路分享"></a>設定網路分享</h1><p>成功安裝 BBB 的驅動程式及連接 BBB USB 線之後，電腦上可以成功偵測出一張新的網卡，也因為這張網卡，我們可以透過 ssh 192.168.7.2 的方式遠端連線至 BBB 上。</p>
+<p>我們現在需要將原本可以上網的網卡 <code>Local Area Connection</code>，並且設定成讓 BBB 的網卡 <code>Local Area Connection 2</code> 可以透過這張網卡上網。</p>
 <ul>
-<li>透過 HDMI interface。</li>
-<li>透過 3.5mm audio jack。<br>所以可以先選定想要輸出聲音的硬體界面，我這邊是選擇將耳機插入 3.5mm 的耳機孔。</li>
+<li>在 Windows 電腦中，選擇 <em>控制台</em> &gt;&gt; <em>網路和網際網路</em> &gt;&gt; <em>網路和共用中心</em> &gt;&gt; <em>變更介面卡</em><br><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160303_001.png" alt="變更介面卡"></li>
+<li>找到原本上網的網路卡 <code>Local Area Connection</code>，並設定成可使用該網卡進行上網。<br><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160303_002.png" alt="開啟網路分享"></li>
+<li>由於 Windows 會強制將被分享上網的網卡變更為一個特定的固定 IP，所以原本 BBB 所屬的網路卡 <code>Local Area Connection 2</code> IP 會被修改，為了之後可以連線至 BBB，所以我們將 BBB 所屬網卡再手動改回至 DHCP 取得 IP。<br><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160303_003.png" alt="變更 IP 設定"></li>
 </ul>
-<p>在 Raspberry Pi 開機之後，我們第一次事先確認 Linux Kernel 是否已載入 Sound Module。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsmod | grep snd_bcm2835</span><br></pre></td></tr></table></figure>
-<p>如果沒有載入音效模組的話，便手動載入：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo modprobe snd_bcm2835</span><br></pre></td></tr></table></figure>
-<p>成功載入後，我們接下來進行進一步的設定。<br>首先設定 Raspberry Pi 聲音輸出的界面：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">amixer cset numid=<span class="number">3</span> n</span><br></pre></td></tr></table></figure>
-<p>上述 “n” 的值代表：</p>
-<ul>
-<li>0: 自動，會自動偵測以 HDMI or 3.5mm audio jack 為輸出界面，但 HDMI 的優先權高於 3.5mm audio jack。</li>
-<li>1: 強制以 3.5mm audio jack 輸出。</li>
-<li>2: 強制以 HDMI 輸出。</li>
-</ul>
-<p>另外 Raspberry Pi 也提供一個程式 <code>alsamixer</code> 讓我們透過 GUI 界面讓我們進行一些進階設定。</p>
-<p>在進入 GUI 界面後，我們透過方向鍵 ↑↓ 來調整音量大小，按下 ESC 鍵離開。</p>
-<p><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150609_001.png" alt="alt alsamixer"></p>
-<p>接下來我們試試看有沒有聲音吧。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aplay /usr/share/sounds/alsa/Front_Center.wav</span><br></pre></td></tr></table></figure>
-<p>這時你應該可以從耳機上聽到一段人聲。</p>
-<h3 id="使用-OMXPlayer-播放"><a href="#使用-OMXPlayer-播放" class="headerlink" title="使用 OMXPlayer 播放"></a>使用 OMXPlayer 播放</h3><p>一個簡單播放 Mp3 的方式便是透過 OMXPlayer。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install omxplayer</span><br><span class="line">wget http://goo.gl/MOXGX3 -O example.mp3 --no-check-certificate</span><br><span class="line">omxplayer example.mp3</span><br></pre></td></tr></table></figure>
-<p>OMXPlayer 是很強大的播放程式，除了支援 Raspberry Pi SoC 的硬體視訊加速功能外，也可以直接透過命令列直接播放影片。</p>
-<p>以下簡單介紹幾種用法。</p>
-<p>播放一個影片檔：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">omxplayer video.mp4</span><br></pre></td></tr></table></figure>
-<p>使用 HDMI 播放影片檔：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">omxplayer -o hdmi video.mp4</span><br></pre></td></tr></table></figure>
-<h2 id="AirPlay-with-Raspberry-Pi"><a href="#AirPlay-with-Raspberry-Pi" class="headerlink" title="AirPlay with Raspberry Pi"></a>AirPlay with Raspberry Pi</h2><p>AirPlay 是 Apple 的一種播放技術，可以將 Mac &amp; iDevice 上的 Video or Audio 送到支援 AirPlay 的設備上進行播放，換句話說只要買一個支援 AirPlay 的藍芽喇叭，就可以把 iPhone 上的音樂送到藍芽喇叭上播放；買一個 Apple TV，就可以把 iPad 上的日劇透過 AirPlay 送到家中的大螢幕上觀看，真是太方便的功能啊。</p>
-<p>如果不想買貴鬆鬆的藍芽喇叭，那麼發揮 Maker 的浪漫，拿家裡的電腦喇叭透過 Raspberry Pi 來實現 AirPlay 也是可以的喔。</p>
-<p>首先更新系統，並下載必要的程式。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get upgrade</span><br><span class="line">sudo apt-get install apt-get install libssl-dev libavahi-client-dev libasound2-dev</span><br></pre></td></tr></table></figure>
-<h3 id="shairport"><a href="#shairport" class="headerlink" title="shairport"></a>shairport</h3><p>shairport 是一個模擬 AirPort Express 並作為接受 AirPlay 串流音樂的程式，雖然不支援 AirPlay v2 (影像及照片串流)，但用作播放音樂使用的話，其實是很不錯的。</p>
-<blockquote>
-<p><em>shairport 的作者已經聲明不再維護該專案了。</em></p>
-</blockquote>
-<p>安裝 shairport：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/abrasive/shairport.git</span><br><span class="line"><span class="built_in">cd</span> shairport</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">./shairport <span class="operator">-a</span> AirPi</span><br></pre></td></tr></table></figure>
-<p>現在拿出 iPhone 播放音樂，開啟 AirPlay，並選擇 <strong>AirPi</strong>，好了，現在有音樂了！<br><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150609_002.png" alt="alt AirPlay screenshot 1"><br><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20150609_003.png" alt="alt AirPlay screenshot 2"></p>
-<hr>
-<p>參考資料：</p>
-<ol>
-<li><a href="http://trouch.com/2012/08/03/airpi-airplay-audio-with-raspberry/" target="_blank" rel="external">http://trouch.com/2012/08/03/airpi-airplay-audio-with-raspberry/</a></li>
-<li><a href="https://github.com/abrasive/shairport" target="_blank" rel="external">https://github.com/abrasive/shairport</a></li>
-<li><a href="http://cagewebdev.com/index.php/raspberry-pi-getting-audio-working/" target="_blank" rel="external">http://cagewebdev.com/index.php/raspberry-pi-getting-audio-working/</a></li>
-<li><a href="http://atceiling.blogspot.tw/2014/02/raspberry-pi.html#.VXVXJ2CbS7M" target="_blank" rel="external">http://atceiling.blogspot.tw/2014/02/raspberry-pi.html#.VXVXJ2CbS7M</a></li>
-<li><a href="http://www.raspberrypi-spy.co.uk/2013/06/raspberry-pi-command-line-audio/" target="_blank" rel="external">http://www.raspberrypi-spy.co.uk/2013/06/raspberry-pi-command-line-audio/</a></li>
-</ol>
+<p>完成這個步驟後，基本上 <code>Local Area Connection 2</code> 便可以透過 <code>Local Area Connection</code> 上外網了。</p>
+<h1 id="設定-Routing-Table"><a href="#設定-Routing-Table" class="headerlink" title="設定 Routing Table"></a>設定 Routing Table</h1><p>接著回到 BBB 上，既然在 Windows 上已經完成網路分享的設定，那麼在 BBB 上應該就可以透過 USB 介面上網才是，現在唯一要做的就是更改 Routing Table，並將 Default Gateway 設定在 usb0 這個介面上。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@beaglebone:~<span class="comment"># route add default gw 192.168.7.1</span></span><br></pre></td></tr></table></figure>
+<p>完成之後，我們印出 routing table 再確認一次。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@beaglebone:~<span class="comment"># route</span></span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">default         <span class="number">192.168</span>.<span class="number">7.1</span>     <span class="number">0.0</span>.<span class="number">0.0</span>         UG    <span class="number">0</span>      <span class="number">0</span>        <span class="number">0</span> usb0</span><br><span class="line"><span class="number">192.168</span>.<span class="number">7.0</span>     *               <span class="number">255.255</span>.<span class="number">255.0</span>   U     <span class="number">0</span>      <span class="number">0</span>        <span class="number">0</span> usb0</span><br></pre></td></tr></table></figure>
+<p>接下來我們嘗試對外 ping 看看。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@beaglebone:~<span class="comment"># ping 8.8.8.8</span></span><br><span class="line">PING <span class="number">8.8</span>.<span class="number">8.8</span> (<span class="number">8.8</span>.<span class="number">8.8</span>) <span class="number">56</span>(<span class="number">84</span>) bytes of data.</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">8.8</span>.<span class="number">8.8</span>: icmp_req=<span class="number">1</span> ttl=<span class="number">64</span> time=<span class="number">24.247</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">8.8</span>.<span class="number">8.8</span>: icmp_req=<span class="number">2</span> ttl=<span class="number">64</span> time=<span class="number">25.192</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">8.8</span>.<span class="number">8.8</span>: icmp_req=<span class="number">3</span> ttl=<span class="number">64</span> time=<span class="number">24.142</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">8.8</span>.<span class="number">8.8</span>: icmp_req=<span class="number">4</span> ttl=<span class="number">64</span> time=<span class="number">23.232</span> ms</span><br></pre></td></tr></table></figure>
+<h1 id="設定-name-server"><a href="#設定-name-server" class="headerlink" title="設定 name server"></a>設定 name server</h1><p>最後我們仍必須加入 dns server 設定，否則將無法解析 domain name。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@beaglebone:~<span class="comment"># echo 'nameserver 8.8.8.8' &gt; /etc/resolv.conf</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@beaglebone:~<span class="comment"># ping google.com</span></span><br><span class="line">PING google.com (<span class="number">173.194</span>.<span class="number">72.101</span>): <span class="number">56</span> data bytes</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">173.194</span>.<span class="number">72.101</span>: icmp_seq=<span class="number">0</span> ttl=<span class="number">48</span> time=<span class="number">27.214</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">173.194</span>.<span class="number">72.101</span>: icmp_seq=<span class="number">1</span> ttl=<span class="number">48</span> time=<span class="number">26.654</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">173.194</span>.<span class="number">72.101</span>: icmp_seq=<span class="number">2</span> ttl=<span class="number">48</span> time=<span class="number">27.766</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">173.194</span>.<span class="number">72.101</span>: icmp_seq=<span class="number">3</span> ttl=<span class="number">48</span> time=<span class="number">26.758</span> ms</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -319,17 +278,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/06/04/Streaming video with Raspberry Pi (cont.)/" rel="next" title="Streaming video with Raspberry Pi (cont.)">
-                <i class="fa fa-chevron-left"></i> Streaming video with Raspberry Pi (cont.)
+              <a href="/2016/02/21/IoT and NAT/" rel="next" title="IoT and NAT">
+                <i class="fa fa-chevron-left"></i> IoT and NAT
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/09/04/Getting Started with Kalay Starter Kit/" rel="prev" title="Getting Started with Kalay Starter Kit">
-                Getting Started with Kalay Starter Kit <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -447,7 +402,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#讓-Raspberry-Pi-發出聲音"><span class="nav-number">1.</span> <span class="nav-text">讓 Raspberry Pi 發出聲音</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-OMXPlayer-播放"><span class="nav-number">1.1.</span> <span class="nav-text">使用 OMXPlayer 播放</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AirPlay-with-Raspberry-Pi"><span class="nav-number">2.</span> <span class="nav-text">AirPlay with Raspberry Pi</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shairport"><span class="nav-number">2.1.</span> <span class="nav-text">shairport</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前情提要"><span class="nav-number">1.</span> <span class="nav-text">前情提要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#設定網路分享"><span class="nav-number">2.</span> <span class="nav-text">設定網路分享</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#設定-Routing-Table"><span class="nav-number">3.</span> <span class="nav-text">設定 Routing Table</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#設定-name-server"><span class="nav-number">4.</span> <span class="nav-text">設定 name server</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -705,9 +660,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'cloudhsiao';
-      var disqus_identifier = '2015/06/09/Play audio with Raspberry Pi/';
-      var disqus_title = 'Play audio with Raspberry Pi';
-      var disqus_url = 'http://yoursite.com/2015/06/09/Play audio with Raspberry Pi/';
+      var disqus_identifier = '2016/02/25/Go internet with usb0 on BeagleBone Black/';
+      var disqus_title = 'Go internet with usb0 on BeagleBone Black';
+      var disqus_url = 'http://yoursite.com/2016/02/25/Go internet with usb0 on BeagleBone Black/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');

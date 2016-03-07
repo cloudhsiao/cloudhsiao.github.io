@@ -181,15 +181,117 @@
 
     
     
+
+    
       
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/02/25/Go internet with usb0 on BeagleBone Black/" itemprop="url">
+                  Go internet with usb0 on BeagleBone Black
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">發表於</span>
+            <time itemprop="dateCreated" datetime="2016-02-25T00:00:00+08:00" content="2016-02-25">
+              2016-02-25
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/02/25/Go internet with usb0 on BeagleBone Black/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/02/25/Go internet with usb0 on BeagleBone Black/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
       
-        
-        
-        
       
 
       
-    
+        
+          
+            <h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>之前在北科大使用 BeagleBone Black (BBB) 講課時遇到一個狀況，學校的電腦教室雖說每一台都配發有獨立的 Public IP（真的是很牛的學校，在如今 Public IP 短缺的時代，連電腦教室裡的每台電腦都可以有自己的 Public IP），但這些 IP 仍被學校網管單位限定以 MAC address 所綁定，因此學生們使用的 BBB 無法藉由這些 Public IP 上到 Internet。</p>
+<p>後來觀察到電腦教室內的電腦竟然安裝有二張網卡，於是我們想出了一種讓可上 Internet 的網卡開啟網路分享功能讓另一個網卡可以上網，再將 BBB 接至該網卡上完成設定的工作。</p>
+<p>但還是需要請系上或學生們自帶一條網路線，著實不便。後來想想既然我們可以使用 USB 線透過 ssh 連線到 BBB 上，那也許 BBB 也可以透過 USB 線上網。</p>
+<p>基於上述的想法，我們開始進行一些嘗試…</p>
+<h1 id="設定網路分享"><a href="#設定網路分享" class="headerlink" title="設定網路分享"></a>設定網路分享</h1><p>成功安裝 BBB 的驅動程式及連接 BBB USB 線之後，電腦上可以成功偵測出一張新的網卡，也因為這張網卡，我們可以透過 ssh 192.168.7.2 的方式遠端連線至 BBB 上。</p>
+<p>我們現在需要將原本可以上網的網卡 <code>Local Area Connection</code>，並且設定成讓 BBB 的網卡 <code>Local Area Connection 2</code> 可以透過這張網卡上網。</p>
+<ul>
+<li>在 Windows 電腦中，選擇 <em>控制台</em> &gt;&gt; <em>網路和網際網路</em> &gt;&gt; <em>網路和共用中心</em> &gt;&gt; <em>變更介面卡</em><br><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160303_001.png" alt="變更介面卡"></li>
+<li>找到原本上網的網路卡 <code>Local Area Connection</code>，並設定成可使用該網卡進行上網。<br><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160303_002.png" alt="開啟網路分享"></li>
+<li>由於 Windows 會強制將被分享上網的網卡變更為一個特定的固定 IP，所以原本 BBB 所屬的網路卡 <code>Local Area Connection 2</code> IP 會被修改，為了之後可以連線至 BBB，所以我們將 BBB 所屬網卡再手動改回至 DHCP 取得 IP。<br><img src="https://dl.dropboxusercontent.com/u/38803326/blog/img_20160303_003.png" alt="變更 IP 設定"></li>
+</ul>
+<p>完成這個步驟後，基本上 <code>Local Area Connection 2</code> 便可以透過 <code>Local Area Connection</code> 上外網了。</p>
+<h1 id="設定-Routing-Table"><a href="#設定-Routing-Table" class="headerlink" title="設定 Routing Table"></a>設定 Routing Table</h1><p>接著回到 BBB 上，既然在 Windows 上已經完成網路分享的設定，那麼在 BBB 上應該就可以透過 USB 介面上網才是，現在唯一要做的就是更改 Routing Table，並將 Default Gateway 設定在 usb0 這個介面上。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@beaglebone:~<span class="comment"># route add default gw 192.168.7.1</span></span><br></pre></td></tr></table></figure>
+<p>完成之後，我們印出 routing table 再確認一次。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@beaglebone:~<span class="comment"># route</span></span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">default         <span class="number">192.168</span>.<span class="number">7.1</span>     <span class="number">0.0</span>.<span class="number">0.0</span>         UG    <span class="number">0</span>      <span class="number">0</span>        <span class="number">0</span> usb0</span><br><span class="line"><span class="number">192.168</span>.<span class="number">7.0</span>     *               <span class="number">255.255</span>.<span class="number">255.0</span>   U     <span class="number">0</span>      <span class="number">0</span>        <span class="number">0</span> usb0</span><br></pre></td></tr></table></figure>
+<p>接下來我們嘗試對外 ping 看看。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@beaglebone:~<span class="comment"># ping 8.8.8.8</span></span><br><span class="line">PING <span class="number">8.8</span>.<span class="number">8.8</span> (<span class="number">8.8</span>.<span class="number">8.8</span>) <span class="number">56</span>(<span class="number">84</span>) bytes of data.</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">8.8</span>.<span class="number">8.8</span>: icmp_req=<span class="number">1</span> ttl=<span class="number">64</span> time=<span class="number">24.247</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">8.8</span>.<span class="number">8.8</span>: icmp_req=<span class="number">2</span> ttl=<span class="number">64</span> time=<span class="number">25.192</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">8.8</span>.<span class="number">8.8</span>: icmp_req=<span class="number">3</span> ttl=<span class="number">64</span> time=<span class="number">24.142</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">8.8</span>.<span class="number">8.8</span>: icmp_req=<span class="number">4</span> ttl=<span class="number">64</span> time=<span class="number">23.232</span> ms</span><br></pre></td></tr></table></figure>
+<h1 id="設定-name-server"><a href="#設定-name-server" class="headerlink" title="設定 name server"></a>設定 name server</h1><p>最後我們仍必須加入 dns server 設定，否則將無法解析 domain name。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@beaglebone:~<span class="comment"># echo 'nameserver 8.8.8.8' &gt; /etc/resolv.conf</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@beaglebone:~<span class="comment"># ping google.com</span></span><br><span class="line">PING google.com (<span class="number">173.194</span>.<span class="number">72.101</span>): <span class="number">56</span> data bytes</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">173.194</span>.<span class="number">72.101</span>: icmp_seq=<span class="number">0</span> ttl=<span class="number">48</span> time=<span class="number">27.214</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">173.194</span>.<span class="number">72.101</span>: icmp_seq=<span class="number">1</span> ttl=<span class="number">48</span> time=<span class="number">26.654</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">173.194</span>.<span class="number">72.101</span>: icmp_seq=<span class="number">2</span> ttl=<span class="number">48</span> time=<span class="number">27.766</span> ms</span><br><span class="line"><span class="number">64</span> bytes from <span class="number">173.194</span>.<span class="number">72.101</span>: icmp_seq=<span class="number">3</span> ttl=<span class="number">48</span> time=<span class="number">26.758</span> ms</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -1085,20 +1187,13 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-count">7</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
           
           
 
-          
-            <div class="site-state-item site-state-tags">
-              
-                <span class="site-state-item-count">10</span>
-                <span class="site-state-item-name">標籤</span>
-              
-            </div>
           
 
         </nav>
