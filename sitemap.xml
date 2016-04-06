@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2016/04/06/Getting%20Started%20with%20MVVM%20using%20RxSwift/</loc>
+    
+    <lastmod>2016-04-06T09:33:54.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2016/02/01/Learn%20RxSwift/</loc>
+    
+    <lastmod>2016-03-17T15:50:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2016/02/25/Go%20internet%20with%20usb0%20on%20BeagleBone%20Black/</loc>
     
     <lastmod>2016-03-07T14:58:42.000Z</lastmod>
@@ -19,13 +33,6 @@
     <loc>http://yoursite.com/2015/06/03/Streaming%20video%20with%20Raspberry%20Pi/</loc>
     
     <lastmod>2016-02-24T01:21:06.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2016/02/01/Learn%20RxSwift/</loc>
-    
-    <lastmod>2016-02-24T01:15:18.000Z</lastmod>
     
   </url>
   
